@@ -47,24 +47,30 @@
 \newtheorem{definition}[prop]{Definition}
 \newtheorem{remark}[prop]{Remark}
 
+%James added commands below
+\newcommand\bl{\left(}
+\newcommand\br{\right)}
+
+
+
 \newlength{\picwi}
 
 \title{NSASAG Problem 23-02 Comparing ranked lists}
-\author{Marina Meil\u{a}\\{\tt mmp@stat.washington.edu}}
+\author{Marina Meil\u{a} and James Buenfil\\{\tt mmp@stat.washington.edu}}
 
 
-\date{October 15, 2023}
+\date{March 1, 2024}
 
 \begin{document}
 
 \maketitle
 
-\mmp{This is a preliminary DRAFT. In addition to the models listed here, several models will be reported on by Yikun Zhang.}
+%\mmp{This is a preliminary DRAFT. In addition to the models listed here, several models will be reported on by Yikun Zhang.}
 
 \section{Notation}
 \label{sec:notation}
 
-Let $\pi=(x_1,\ldots x_n)$, $\pi'=(y_1,\ldots y_m)$ be the two lists; we will call lists like these \topt permutations; here $t=n$, respectively $m$. We may denote alternatively $x_j\equiv \pi_j, y_j\equiv \pi'_j$, and $|\pi|=n,|\pi'|=m$; then $\pi_{1:k}\equiv x_{1:k}$ is a prefix of $\pi$. If necessary, we assume $n\geq m$. 
+Let $\pi=(x_1,\ldots x_n)$, $\pi'=(y_1,\ldots y_m)$ be the two lists; we will call lists like these \topt permutations; here $t=n$, respectively $m$. We may denote alternatively $x_j\equiv \pi_j, y_j\equiv \pi'_j$, and $|\pi|=n,|\pi'|=m$; then $\pi_{1:k}\equiv x_{1:k}$ is a prefix of $\pi$.% If necessary, we assume $n\geq m$. 
 
 We will assume that the lists $\pi,\pi'$ are drawn from the same probability
 distribution $\probb$ over a very large set of items $\X$. The modal
@@ -73,7 +79,7 @@ denoted by $\sigma_0$. In general, we denote by $\sigma\in \ssss_{\X}$
 complete permutations of the elements of $\X$; we also denote with $\sigma$ complete or truncated ``model parameters'', while with $\pi$ we denote observations (always truncated). We will never have access to the entire $\X,\sigzero$ or $\probb$, but we will assume these exist and do math with them. In fact, in some cases, we can assume $\X$ is countable. In general, it will be unreasonable to obtain results that depend strongly on $|\X|$. 
  In this report, ranking, list, are used interchangeably; for permutations of the entire set $\X$ we may also use the term permutation.
 
-In the sections below, I consider several possible model families for $\probb$. The approach described here is with the first family, \gmms, in mind, but for obvious reasons it would apply to other model familes.
+In the sections below, we consider several possible model families for $\probb$. The approach described here is with the first family, \gmms, in mind, but for obvious reasons it would apply to other model familes.
 
 
 \section{Approach}
@@ -82,65 +88,64 @@ Desired properties/constraints of the solution
 \benum
 \item $\pi,\pi'$ do not have the same elements; $m\neq n$
 \item $\pi \cup \pi'$ too large to handle or sort; we can't assume to know $\probb(\pi \cup \pi')$
-\item We only vaguely know the size of $\X$, results should not depend strongly on it (in fact, I don't even have a notation for it). A note on terminology: standard models over rankings assume that $\X$ is ``known'', e.g. that we can have 1 parameter/item, or per pair of items. For simplicity, I will call this case (abusively) {\em FINITE} $\X$, and will bundle a very large incompletely known $\X$ with the {\em INFINITE} $\X$. 
+\item We only vaguely know the size of $\X$, results should not depend strongly on it. A note on terminology: standard models over rankings assume that $\X$ is ``known." For simplicity, I will call this case (abusively) {\em FINITE} $\X$, and will bundle a very large incompletely known $\X$ with the {\em INFINITE} $\X$.
 \item We cannot get more samples from $\probb$
 \item The null hypothesis is that the lists are sampled from the same distribution.
 \item We assume that the recommender system (i.e. $\probb$) is good enough, hence the lists $\pi,\pi'$ are ``close''. Implicitly we assume also that the recommender system is non-deterministic, i.e. it can give slightly varying answers to the same query.  
   \eenum
   %
 Thus, as the proposer also implies, a general strategy will be to measure a distance $d(\pi,\pi')$ and to reject the null when the distance is too large to be generated from a $\probb$ which is concentrated around its mode $\sigzero$. 
-  
+  %TODO: keep this line?
 
 \section{Infinite Generalized Mallows S models (\gmms)}
 \label{sec:gmms}
 
-I'll describe \gmms here briefly; the details are to be found in the reference
+The \gmms~model is described here briefly; the details are to be found in the reference
 \cite{MBao}.
 
 \benum
 \item In \gmms, we assume that $\X$ is countable. A finite version exists and all the results in \cite{MBao} transfer to the finite models with minor changes.
-\item \gmms has 2 parameters: the {\em modal permutation} $\sigma_0\in
-  \ssss_{\X}$, and a {\em parameter vector}
-  $\theta=(\theta_1,\theta_2,\ldots \theta_j,\ldots)$, where
-  $\theta_j\in (0,1)$ is a {\em concentration} parameter associated
-  with rank $j$ (more details below). Note that $\theta$ is an
+\item \gmms~has 2 parameters: the {\em modal permutation} $\sigma_0\in
+  \ssss_{\X}$, and a {\em parameter vector} 
+  $p=(p_1,p_2,\ldots p_j,\ldots)$, where
+  $p_j\in (0,1)$ is a {\em concentration} parameter associated
+  with rank $j$ (more details below). Note that $p$ is an
   infinite vector, $\sigma_0$ an infinite permutation, and the samples
-  from $\probb=\gmms_{\sigzero,\theta}$ are infinite permutations as
+  from $\probb=\gmms_{\sigzero,p}$ are infinite permutations as
   well. Let this not trouble us.
-\item We assume that all we observe from the samples drawn from $\gmms_{\sigzero,\theta}$ are \topt permutations (denoted by $\pi,\pi',\ldots$) truncated at arbitrary values $t$. Since $t$ is observed, we don't need to learn anything about it.
+\item We assume that all we observe from the samples drawn from $\gmms_{\sigzero,p}$ are \topt permutations (denoted by $\pi,\pi',\ldots$) truncated at arbitrary values $t$. Since $t$ is observed, we don't need to learn anything about it.
 \item
-  In this case, the beauty of $\gmms$ is that $\probb(\pi)$, where $\pi$ is a \topt permutation, depends only on $\theta_{1:t}$ and a {\em finite prefix} of $\sigzero$. In \cite{MBao} it is shown how the \gmms can be estimated by Max Likelihood from a sample of \topt permutations. That is, any finite data set will determine a prefix of $\sigzero$ and $\theta$ and leave the rest completely undetermined.
-\item The \gmms is an exponential family model given by
+  In this case, the beauty of $\gmms$ is that $\probb(\pi)$, where $\pi$ is a \topt permutation, depends only on $p_{1:t}$ and a {\em finite prefix} of $\sigzero$. In \cite{MBao} it is shown how the \gmms~can be estimated by Maximum Likelihood from a sample of \topt permutations. That is, any finite data set will determine finite prefixes of $\sigzero$ and $p$ and leave the rest completely undetermined.
+\item The \gmms~is an exponential family model given by
   \beq
-\gmms(\pi|\sigzero,\theta)\;=\;\prod_{j=1}^t\frac{1}{Z(\theta_j)}\theta_j^{s_j},
+\gmms(\pi|\sigzero,p)\;=\;\prod_{j=1}^t\frac{1}{Z(p_j)}p_j^{s_j},
 \eeq
 %
-where $t=|\pi|$, and $s_{1:t}\in\nnnn$ are an alternative representation of $\pi$ known as the {\em code} of $\pi$ \cite{Stanley} (or inversion table). The normalization constants are the sum of the infinite geometric series $1+\theta_j+\theta_j^2+\ldots$, i.e.
+where $t=|\pi|$, and $s_{1:t}\in\nnnn$ are an alternative representation of $\pi$ known as the {\em code} of $\pi$ \cite{Stanley} (or inversion table). The normalization constants are the sum of the infinite geometric series $1+p_j+p_j^2+\ldots$, i.e.
 \beq
-Z(\theta)\;=\;\frac{1}{1-\theta}.
+Z(p)\;=\;\frac{1}{1-p}.
 \eeq
-(For finite $\X$, the $Z$'s are sums of {\em finite} geometric series. This is because each $s_j$ is sampled independently from the geometric distribution $\geom(\theta_j)$.
-\item The \gmms has sufficient statistics (finite if data is finite), which consist of counts $Q_{j,ab}=\#\{(a\prec b) \text{and} \rank(a)=j\}$ in sample.
-\item In addition, from \cite{MBao} we know that for given $\sigzero$, the conjugate prior over $\theta_j$ is a Beta distribution (naturally, given that \eqref{eq:gmms} is an exponential family). 
+For infinite $\X$, this model is equivalent to saying that each $s_j$ for $j=1 ,\ldots t$ is sampled independently from a geometric distribution with parameter $1-p_j$. We use the convention that the geometric distribution counts the number of failures before the first success in a sequence of Bernoulli trials, where the probability of success is $1-p_j$.
+%TODO: I removed this line: For finite $\X$, $Z$ becomes the sum of a {\em finite} geometric series.
+\item The \gmms~has sufficient statistics (finite if data is finite), which consist of counts $Q_{j,ab}=\#\{(a\prec b) \text{and} \rank(a)=j\}$ in sample.
+\item In addition, from \cite{MBao} we know that for given $\sigzero$, the conjugate prior over $p_j$ is a Beta distribution (naturally, given that \eqref{eq:gmms} is an exponential family). 
 \eenum
-So, the advantages of the \gmms are that its stagewise data generation models fits with the assumptions of our problem, and that we understand their properties pretty well, relative to other $\probb$'s over $\ssss_{\X}$.
+So, the advantages of the \gmms~are that its stagewise data generation models fits with the assumptions of our problem, and that we understand their properties pretty well, relative to other $\probb$'s over $\ssss_{\X}$.
 
-In particular, if we want to model less variability in the top ranks than at the middle or bottom ranks, we can set smaller $\theta_j$ values for the higher ranks. A proposal \cite{} is to have slowly decay as $\theta_j\propto a^{1/j}$. 
+In particular, if we want to model less variability in the top ranks than at the middle or bottom ranks, we can set smaller $p_j$ values for the higher ranks. A proposal is to have slowly decay as $p_j\propto a^{1/j}$. %TODO: supposed to be a reference here?
 
-\subsection{DRAFT. First idea, estimate $\gmms$ from $\pi,\pi'$}
+\subsection{Estimate $\gmms$ from $\pi,\pi'$}
 \label{sec:gmm-sig0}
-
-{\bf Sketch}
 \benum
-\item \label{it:est-sig0}  Estimate a model $\sigzero,\theta_{1:n}$ from $\pi,\pi'$ by ML. Of course this will be a very rough estimate and we will have to consider this in the ``confidence'' of our inferences.
+\item \label{it:est-sig0}  Estimate a model $\sigzero,p_{1:n}$ from $\pi,\pi'$ by ML. Of course this will be a very rough estimate and we will have to consider this in the ``confidence'' of our inferences.
 
   Regardless of the statistical confidence, with a sample of 2, there will be multiple (many!) equally likely modal permutation $\sigzero$. This is not bad, because we would have to smooth/average over the most likely $\sigzero$'s anyways (in a Bayesian fashion or not).
 
 Suppose we get a set $S$ of $\sigma$ candidates for modal permutations (note that these, being estimates, are all truncated to some finite length).
 
-\item \label{it:est-thet} For each $\sigma\in S$, we estimate $\thetahat(\sigma)$ the ML parameters (straightforward, again with high variance). We can also get the MAP estimate or posterior from the conjugate prior (in closed form, given $\sigma$).
+\item \label{it:est-thet} For each $\sigma\in S$, we estimate $\hat{p}(\sigma)$ the ML parameters (straightforward, again with high variance). We can also get the MAP estimate or posterior from the conjugate prior (in closed form, given $\sigma$).
 
-\item \label{it:threshold} A $\gmms$ is more dispersed when $\theta_j\approx 1$ and is highly concentrated when $\theta_j\approx 0$. If the expected $\theta_j$'s estimated above are above a threshold, it will mean that the recommender system is not very good. If we believe we have a good recommender system, then we should reject the null.  
+\item \label{it:threshold} A $\gmms$ is more dispersed when $p_j\approx 1$ and is highly concentrated when $p_j\approx 0$. If the expected $p_j$'s estimated above are above a threshold, it will mean that the recommender system is not very good. If we believe we have a good recommender system, then we should reject the null.  
 \eenum
 
 Pros:
@@ -148,7 +153,7 @@ Pros:
 \item The part on $\sigma$ estimation is straightforward.
   \item Steps \ref{it:est-sig0}, \ref{it:est-thet} can be done by
   Monte Carlo \cite{ChenM}\mmp{to check!} with a conjugate prior
-  non-informative on $\sigzero$.
+  non-informative on $\sigzero$. %TODO: keep this part?
 \item Many   reasonable adaptations to Step \ref{it:threshold} can be
   designed.
   \eit
@@ -157,24 +162,21 @@ Cons: There can be very many $\sigma$'s in $S$. $\sigma$ will have to be over $\
 
 \subsection{Sampling from the null, without committing to $\sigzero$}
 \label{sec:gmm-sampling}
-I feel it would be more truthful to the problem to {\em not} attempt to estimate $\sigzero$ at all. The nice thing about a $\gmms$ is that the dispersion is invariant to the modal permutation; i.e. all the properties of the \gmms hold w.l.o.g. for $\sigzero=\idperm$ the identity. That's the same as saying that items don't count, only their ranks and relative ranks.
+It could be more truthful to the problem to {\em not} attempt to estimate $\sigzero$ at all. The nice thing about a $\gmms$ is that the dispersion is invariant to the modal permutation; i.e. all the properties of the \gmms~hold w.l.o.g. for $\sigzero=\idperm$ the identity. That's the same as saying that items don't count, only their ranks and relative ranks.
 
 The sampling algorithm to collect statistics on ranks, is very simple.
 
 \benum
 \item[]{\bf Algorithm} \algsamgmm
-\item[Input] $t$ length of $\pi$,  parameters $\theta_{1:n}$.
-\item[Sample $s_{1:t}$] For $j=1:t$, sample $s_j\sim \geom(\theta_j)$.
-\item[Decode] Make a long list $1:N$ with $N=t+\max s_j$; this stands for $\sigzero$. Construct $\pi$ from $\sigzero$ and $(s_{1:t})$ according to the recursive algorithm in \cite{MBao}. Obviously this step can be made more efficient in numerous ways. 
+\item[Input] $t$ length of $\pi$,  parameters $p_{1:n}$.
+\item[Sample $s_{1:t}$] For $j=1:t$, sample $s_j\sim \geom(1-p_j)$.
+\item[Decode] Make a list $1:N$ with $N=t+\max s_j$; this is a prefix of $\sigzero$. Construct $\pi$ from $\sigzero$ and $(s_{1:t})$ according to the recursive algorithm in \cite{MBao}. %Obviously this step can be made more efficient in numerous ways. 
 \item[Output] $\pi$, code $(s_{1:t})$
   \eenum
 
-  {\bf Variation} The $\theta$'s can be sampled fromt the Beta prior. This would be an informative prior, concentrating on small values for $\theta_j$ (i.e. we believe the recommender is not too noisy).
+{\bf Variation} The $p$'s can be sampled fromt the Beta prior. This would be an informative prior, concentrating on small values for $p_j$ (i.e. we believe the recommender is not too noisy).
 
-  With \algsamgmm, we can sample pairs of lists with lengths $m,n$, and compute rank statistics. 
-
-\subsection{DRAFT. Second idea, inference without $\sigzero$}
-\label{sec:gmm-delta}
+With \algsamgmm, we can sample pairs of lists with lengths $m,n$, and compute rank statistics. 
 
 
 \subsection{Distances and weighted distances between ordered lists} 
@@ -183,52 +185,85 @@ This subsection relies heavily on material from \cite{MBao}. A paper in a differ
 
 The codes $s_j$ count inversions between $\pi$ and the modal permutation $\sigzero$; more specifically, $s_j$ is the number of inversions introduced at rank $j$ in the \algsamgmm algorithm. Therefore
 \beq
-\sum_{j=1}^t s_j\ln\frac{1}{\theta_j}=d_\theta(\pi,\sigzero),
+\sum_{j=1}^t s_j\ln\frac{1}{p_j}=d_p(\pi,\sigzero),
 \eeq
 %
-is a reasonable ``distance''\footnote{For complete permutations and $\theta_j=$ constant, $d_\theta$ is a metric, proportional to the Kendall $\tau$. However, in our case it is not a metric.} Note also that $\ln\frac{1}{\theta_j}$ is the natural parameter of the \gmms, and it's worth giving it the notation
+is a reasonable ``distance''\footnote{For complete permutations and $p_j=$ constant, $d_p$ is a metric, proportional to the Kendall $\tau$. However, in our case it is not a metric.} Note also that $\ln\frac{1}{p_j}$ is the natural parameter of the \gmms, and it's worth giving it the notation
 %
 \beq
-\tilthe_j\;=\;\ln\frac{1}{\theta_j}
+\theta_j\;=\;\ln\frac{1}{p_j}
 \eeq
 %
-However, what we would like is a similarly weighted distance between two ordered lists. We can do this, if we carefully count how many inversions between $\pi$ and $\pi'$ appear at each rank.
-
-In more detail (proof to follow), assume $\pi,\pi'$ are sampled
-stagewise from $\gmms_{\sigzero,\theta}$, let $s_j,s'_j$ be the values sampled for rank $j$. At $j=1$, if $s_1=s'_1$, $\pi_1=\pi'_1$ and no inversion appears. But if $s_1<s'_1$, then $x_1\prec y_1$ in $\pi$, but the opposite is true in $\pi'$. Hence, we have introduced exactly one inversion at this step. Following the same reasoning recursively we obtain that
-
-\begin{prop} \label{prop:delta} Let $A_j,A'_j$ be the sets formed with the elements of $\pi_{1:j},\pi'_{1:j}$ and let $\Delta_j$ denote the number of inversions introduced at stage $j$. Then $\Delta_j=2j-|A_j\cap A'_j|=|A_j\Delta A'_j|$, i.e., $2j$ minus the number of common items encountered up to rank $j$.  
-
-Moreover, $\Delta_j-\Delta_{j-1}=\bbone{\pi_j\in
-  A'_{j-1}}+\bbone{{\pi'_j\in A_{j-1}}}$, a sum of two Bernoulli
-r.v.'s, which are independent given $A_{j-1},A'_{j-1}$.
-\end{prop}
-%
-Hence, a weighted (non-metric) Kendall-tau-like distance between $\pi,\pi'$ is
-\beq
-d_{K,\theta}(\pi,\pi')=\sum_{j=1}^{\min(m,n)} \tilthe_j \Delta_j
-\eeq
-%
-In the above, the sum goes only over the ranks $1:m$ (if $m<n$). 
-We can even extend this to ranks $m+1:n$ of $\pi$ by considering the asymmetric differences. That is,
-\beq
-\Delta_{j+1}\;=\;\Delta_j+\bbone{\pi_j\in A'_{m}}
-\quad \text{ for } j=m+1:n. 
-\eeq
-%
-\begin{remark} 
-In addition, $A_j,A'_j,\Delta_j$ depend only on $s_{1:j},s'_{1:j}$ and therefore only on $\theta_{1:j}$. 
+\begin{remark}
+    In \cite{MBao}, rather than parameterizing the model by the $p_j$ used here, $\theta_j$ is used instead. (see equation (4) of \cite{MBao}).)
 \end{remark}
 
-\formmp{So, shall we set up a test only on the increments?}
+However, what we would like is a similarly weighted distance between two ordered lists $\pi$ and $\pi'$, rather than between $\pi$ and the modal permutation $\sigzero$. To do this, we carefully count how many inversions between $\pi$ and $\pi'$ appear at each rank. To define inversions between $\pi$ and $\pi'$ at a specific rank $j$, first we will define the total number of inversions between them.
+
+\begin{definition}
+The total number of inversions, denoted $\inv\bl \pi, \pi' \br$, between $\pi,\pi'$ is the number of pairs $\{a,b\}\subset \pi \cup \pi'$ on whose order $\pi$ and $\pi'$ disagree. 
+\end{definition}
+
+Moving forward, it will make things easier to ``complete" both lists. The following proposition says that the total number of inversions before and after completing the lists remains the same.
+
+\begin{prop}
+    Complete $\pi,\pi'$ to $\tilpi,\tilpi'$ as follows: append to $\pi$ the ordered set of items in $\pi'$ which are not in $\pi$, i.e. $\tilpi=\pi|\pi'_{|\pi'\setminus\pi}$, and similarly for $\tilpi'$. Then $|\tilpi|=|\tilpi'|=|\pi \cap \pi'|$, and $\inv(\pi,\pi') = \inv \bl \tilpi,\tilpi' \br$.
+\end{prop}
+
+Therefore, from now on, w.l.o.g., we can consider that $\pi,\pi'$ are complete permuations over the same set of $n$ items.
+
+Next we define the number of inversions between $\pi$ and $\pi'$ introduced at rank $j$. 
+
+\begin{definition}
+    Let $\pi_{1:j}$ denote the prefix of $\pi$ found by considering only the first $j$ items, and similarly for $\pi'$. Then for $j=1, \ldots n$, $\Delta_j$,the number of inversions introduced at rank $j$, is defined by:
+    \begin{equation}
+        \Delta_j \equiv \inv \bl \pi_{1:j},\pi'_{1:j}\br - \inv \bl \pi_{1:(j-1)},\pi'_{1:(j-1)}\br
+    \end{equation}
+    where the total number of inversions between empty lists is defined to be $0$.
+    In other words, it is the number of inversions added to the total number of inversions between $\pi_{1:(j-1)}$ and $\pi'_{1:(j-1)}$ when adding the $j$th elements $\pi_j$ and $\pi'_j$ to their lists respectively.
+\end{definition}
+
+Note that from the definition, the total number of inversions between $\pi$ and $\pi'$ can be computed from the $\Delta_j$ as $\inv\bl \pi,\pi'\br=\sum_{j=1:n}\Delta_j$.
 
 
+Hence, a weighted (non-metric) Kendall-tau-like distance between $\pi,\pi'$ is
+\beq
+d_{K,p}(\pi,\pi')=\sum_{j=1}^{n} \theta_j \Delta_j
+\eeq
+This is a natural quantity around which we can define hypothesis tests to test if two given rankings came from the same distribution.
+
+It turns out that we can compute the $\Delta_j$ using the formula in the following proposition.
+
+%
+\begin{prop} Denote $A_j = \pi_{1:j}$, $A'_j = \pi'_{1:j}$, $C_j=A_j\setminus A'_j$, and $C'_j=A'_j\setminus Aj$. Let $c_j(i')=\bl \text{rank of $i'$ in $C_j$}\br -1$, if $i'\in C_j$, and $|C_j|$ otherwise, and define $c'_j(i)$ similarly; let $i=\pi_{j+1},\,i'=\pi'_{j+1}$. Let I be the indicator for a logical statement ($1$ if true, $0$ if false). Then,
+  \beq \Delta_{j+1}\,=\,c_j(i')+c'_j(i)+ I\bl i \neq i' \br I\bl i \notin C_j' \text{and } i \notin C_j \br.  \eeq
+\end{prop}
+%
+    {\bf Proof} There are five cases. The proof follows from verifying the given formula in all cases:\\
+    (i) $i,i'$ new, i.e. $i\not\in C'_j$, $i'\not\in C_j$, and $i=i'$. When $i$ is appended to $\pi$, all the items in $C'_j$ are yet to be appended to $\pi$, while they are already in $\pi'$. Therefore we introduce $c'_j(i)$ inversions. Similarly for $i'$.\\
+    (ii) $i,i'$ new, and $i\neq i'$. This case is equivalent to case (i), except there is $1$ additional inversion added, since $i \neq i'$.\\
+    (iii) $i\in C'_j,\,i'\not\in C_j$. For $i'$ which is new, the same reasoning as above gives us $c_j(i')$ inversions. For $i$ which is old, there are less inversions introduced, because all items which are ranked below $i$ do not add another inversion. Therefore, it is the rank of rank of $i$ in $C'_j$ minus $1$ which is the number of inversions added due to adding $i$ to $\pi_{1:j}$.\\
+    (iv) $i\notin C'_j,\,i'\in C_j$.
+    Analogous to case (iii).\\
+    (v) $i\in C'_j,i'\in C_j$. Similar reasoning to the above. $\Box$.
+    %
+\begin{remark} 
+Note that $\Delta_j$ is not equal to $s_j$, or $s'_j$, the codes of $\pi,\pi$ w.r.t. $\sigma$. In fact, by the triangle inequality $\sum_j\Delta_j\leq \sum_j s_j +\sum_j s'_j$.  
+\end{remark}
 
 
+In practice, we compute $\Delta_{j+1}$ using the formula in the proposition (requiring $C_{j}$, $C_{j}'$, $\pi_{j+1}$, and $\pi_{j+1}'$). We can compute the $\Delta_j$ sequentially (and relatively quickly) thanks to the fact that we can find $C_{j+1}$ and $C_{j+1}'$ using only $C_{j}$, $C_{j}'$, $\pi_{j+1}$, and $\pi_{j+1}'$, and depending on which of the five cases we are in.
 
+\subsection{Accompanying code}
+In the accompanying R code, we implement many of the ideas here, in particular:
+\begin{enumerate}
+    \item Maximum likelihood estimation of $\sigzero$ and $p_{1:n}$ from a finite sample of rankings discussed in Section \ref{sec:gmm-sig0}
+    \item Sampling from the $\gmms$ model discussed in Section \ref{sec:gmm-sampling}.
+    \item Computing the $\Delta_j$, the number of inversions between $\pi$ and $\pi'$ introduced at rank $j$ discussed in Section \ref{sec:distances}.
+\end{enumerate}
 
-
-\section{DRAFT. Stochastic Inversion Models}
+We remark that in the code, we use the $\theta_j$ parameterization of the model, following \ref{MBao} $\bl \theta_j \equiv \ln{\frac{1}{p_j}} \br$.
+\section{Stochastic Inversion Models}
 \label{sec:stoch-i-m}
 Widely analyzed theoretically, assumes independent inversions between each pair of items. Not a distribution over $\ssss_{\X}$; this is not necessarily a problem. Has a parameter per pair of items, handles partial comparisons data naturally (i.e. $a \prec b$), no explicit modal ranking (a plus). To see if it extends to very large $\X$. 
 
@@ -245,68 +280,9 @@ Top ranks have iid (?) distribution. Not known how far down this property holds.
 To see if relevant.
 
 \appendix
-\section{Proof of Proposition \ref{prop:delta}}
-
-To obtain the formula for $\Delta_j$, first consider the following algorithm for filling $Q(\pi,\pi')$.
-
-\paragraph{Completing the permutations}
-\begin{definition}
-The number of inversions between $\pi,\pi'$ is the number of pairs $\{a,b\}\subset \pi \cup \pi'$ on whose order $\pi$ and $\pi'$ disagree. 
-\end{definition}
-
-\begin{prop}
-  Complete $\pi,\pi'$ to $\tilpi,\tilpi'$ as follows: append to $\pi$ the ordered set of items in $\pi'$ which are not in $\pi$, i.e. $\tilpi=\pi|\pi'_{|\pi'\setminus\pi}$, and similarly for $\tilpi'$. Then $|\tilpi|=|\tilpi'|=|\pi \cap \pi'|$ and $d(\tilpi,\tilpi')=d(\pi,\pi')$
-\end{prop}
-
-Therefore, from now on, w.l.o.g., we can consider that $\pi,\pi'$ are complete permuations over the same set of $n$ items.
-
-\paragraph{Counting the inversions with $Q(\pi,\pi')$}
-We will fill in the matrix $Q(\pi,\pi')$ sequentially as follows.  By convention, we assume that $Q_{ab}=0$ initially, and all elements are marked as ``not yet set''. In what follows, only the elements below the diagonal will count (i.e. one can ignore all the elements above the diagonal) but for simplicity we will fill in all of $Q$. 
 
 
-This matrix has its rows and columns ordered by $\pi$. At stage $j$, with $j=1,2,\ldots n$, we fill row and column $\pi'_j$ of $Q$ as usual:
-\bit
-\item Set all ``not yet set'' elements of column $Q_{\pi'_j}$ to 0, and mark them as ``set''.
-\item Set all ``not yet set'' elements of row $Q_{\pi'_j}$ to 1, and mark them as ``set''.
-\item Note that the value of the diagonal is always ignored, and this simple algorithm will ensure it is 0.
-\eit
 
-\begin{prop}
-(It is easy to see that:) After $n$ steps, the matrix $Q$ will be entirely set, and will represent the inversion matrix of $\pi,\pi'$. Hence, $L(Q)$, the sum of the lower triangle of $Q$, will count the inversions $\inv(\pi,\pi'$).  At stage $j$, $L(Q)=\inv(\pi_{1:j},\pi'_{1:j})$. 
-\end{prop}
-
-\begin{prop}
-Define $\Delta'_j=\sum_{j'=1:n}Q_{\pi'_j,j'}+\sum_{j'\in A_{j-1}', j'>j}Q_{j,j'}$. Then $\inv(\pi,\pi')=\sum_{j=1:n-1}\Delta'_j$
-\end{prop}
-{\bf Proof} W.l.o.g. we can assume $\pi=[1\,2\,\ldots\,n]$ and
-therefore $A_j=1:j$. The elements of $Q$ can only change from 0 to 1
-in the algorithm above. Therefore $\Delta'_j$ is the number of 1's
-added at step $j$. Where are they? Obviously in row $\pi'_j$, but at
-this stage we also look at the part of column $j$ whose elements are
-below the diagonal. All the elements not in $A'_{j-1}$ will be 0,
-therefore the second term is equal to $\sum_{j'>j}Q_{j',j}$.  Now by a
-simple induction we see that
-$\sum_j\Delta'_j=L(Q)=\inv(\pi,\pi')$. $\Box$
-
-In fact, it will turn out that $\Delta'_j=\Delta_j$. The above is a way to compute it.
-
-\paragraph{The formula for $\Delta_j$}
-%
-\begin{prop} Denote $B_j=A_j\cap A'_j$, $C_j=A_j\setminus A'_j$, $C'_j=A'_j\setminus Aj$. Let $c_j(i')=\text{rank of $i'$ in $C_j$})-1$, if $i'\in C_j$, and $|C_j|$ otherwise, and define $c'_j(i)$ similarly; let $i=\pi_{j+1},\,i'=\pi'_{j+1}$.  Then,
-  \beq \Delta_{j+1}\,=\,c_j(i')+c'_j(i)+\delta_{ii'}.  \eeq
-\end{prop}
-%
-    {\bf Proof} Obviously, $i,i'\not\in B_j$. There are three cases:
-    (i) $i,i'$ new, i.e. $i\not\in C'_j$, $i'\not\in C_j$. This is the only case when $i=i'$ is possible. When $i$ is appended to $\pi$, all the items in $C'_j$ are yet to be appended to $\pi$, while they are already in $\pi'$. Therefore we introduce $c'_j(i)$ inversions. Similarly for $i'$. Finally, if $i\neq i'$, then there must be 1 inversion between them.
-
-    (ii) $i\in C'_j,\,i'\not\in C_j$. For $i'$ which is new, the same reasoning as above gives us $c_j(i')$ inversions. Note that they are the 1's in row $i'=\pi'_{j+1}$ of $Q$, up to column $j+1$. Now, for $i\in C'_j$, it is appended before all items in $C'_j$ except for itself; recall $c'_j(i)+1$ is the rank of $i$ in $\pi'_{|C'_j}$. Therefore, all the items in $\pi'_{c'_j(i)+1,|C'_j|}$ are also after $i$ in $\pi'$ and do not count as inversions, while the $c'_j(i)$ items preceding it do. These are the 1's in column $j+1$ of $Q$ which are also in $A'_j$. 
-
-    (iii) $i\in C'_j,i'\in C_j$. Similar reasoning to the above.
-
-    This also shows that $\Delta'_j=\Delta_j$ $\Box$
-    %
-\begin{remark} Note that $\Delta_j$ is not equal to $s_j$, or $s'_j$, the codes of $\pi,\pi$ w.r.t. $\sigma$. In fact, by the triangle inequality $\sum_j\Delta_j\leq \sum_j s_j +\sum_j s'_j$.  
-      \end{remark}
 
     
 \end{document}
