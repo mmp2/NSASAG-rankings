@@ -5,9 +5,8 @@ date: "2024-02-07"
 output: html_document
 ---
 
-
-Specify dataset $S_N$, then we rename them using values $1, \ldots N$ (this makes the computation faster).
-Can find the original names using vector unordermap and function original_names_SN.
+Specify dataset $S_N$ (a list of lists of integers, where each sublist is one of the observed rankings). In the case of interest, $S_N$ consists of only two rankings. Then we rename them using values $1, \ldots N$ (this makes the computation faster).
+We can find the original names using vector unordermap and function original_names_SN.
 ```{r}
 #example data, each list contains the order of the items ranked, e.g. list(2,4,1) means item 2 ranked first, item 4 ranked second, item 1 ranked third
 S_N_true_names = list(list(1,2,8),list(2,7,1),list(100,2,3))
@@ -18,9 +17,9 @@ S_N = output$S_Nnew
 #vector that can be used to take new item names to old item names using function "original_names_SN"
 unordermap = output$unordermap
 
-#lines below shows usage of original_names_SN. You can verify that S_N_orginal_names equals S_N_true_names
-#S_N_orginal_names = original_names_SN(S_N,unordermap)
-#print(S_N_orginal_names)
+#lines below shows usage of original_names_SN. You can verify that S_N_original_names equals S_N_true_names
+S_N_original_names = original_names_SN(S_N,unordermap)
+print(S_N_original_names)
 
 ```
 
@@ -32,36 +31,49 @@ Do maximum likelihood estimation based on the data to find MLE $\sigma_0$ and ML
 #default values
 output = ML_estimation(S_N,theta_init = NULL,max_iterations = 20)
 sigma0ML = output$sigma1
-thetaML = output$theta
+thetaML = output$theta #theta is related to p in the writeup via theta_j = ln(1/p_j)
+
 
 #we can use original_names_SN to look at sigma0 using the true names
 sigma0ML_original_names = as.list(unlist(original_names_SN(sigma0ML,unordermap)))
 print(sigma0ML_original_names)
 ```
 
+
 We can sample from the generalized mallows model using a specified $\theta$ (such as the one estimated from maximum likelihood estimation). We just have to specify the number of and lengths of the permutations we want.
 ```{r}
 #We can sample from the model (specified by theta) using sample_GMM
 #t specifies the lengths of the sampled rankings we want
 t = c(1,2,3,3)
+#specifying t in this way is saying that, we want to sample 4 rankings from the 
+#model, with lengths 1,2, 3, and 3.
 #max(t) must be smaller than or equal to length(theta). 
-#Here, sigma0 is 1, 2, ...
+#Here, the modal permutation sigma0 is (1, 2, 3... )
+#sample_GMM returns a list of lists representing the rankings (the same format as S_N).
+S_sampled = sample_GMM(t = t,theta = thetaML)
+print(S_sampled)
+
 #Note that by the nature of sampling from a model with an infinite number of
 #items, we may see items appear in the sampled rankings that have no
-#corresponding item in S_N, the dataset.
-#However, we can still compute statistics using samples from the
-#estimated maximum likelihood parameters.
-#sample_GMM returns a list of rankings, the same format as S_N
-S_sampled = sample_GMM(t = t,theta = thetaML)
+#corresponding item in S_N, the dataset: If we, as described above, are sampling
+#from the model using the thetaML estimated from maximum likelihood using S_N
+#(the renamed S_N), then the new items are simply the ones with names larger
+#than max(S_N).
+paste("New items in S_sampled are those with names larger than",max(unlist(S_N)))
 ```
 
-We can compute the $\Delta_j$ between two rankings $\pi_1$ and $\pi_2$.
+We can compute the $\Delta_j$ between two rankings $\pi_1$ and $\pi_2$. Below, the rankings are random permutation of 1,2, ... 2000, so there are a large number of total inversions between the two rankings.
 ```{r}
-pi1 = list(1,3,4)
-pi2 = list(2,4,1,7)
+n=2000
+pi1 = sample(1:n, replace=FALSE)
+pi2 = sample(1:n,replace=FALSE)
+
+#pi1 = list(1,3,4)
+#pi2 = list(2,4,1,7)
 
 #we can compute the number of inversions at each rank between two rankings
 deltas = compute_deltas(pi1,pi2)
 print(deltas)
+print(sum(deltas))
 ```
 

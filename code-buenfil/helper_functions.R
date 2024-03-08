@@ -1,8 +1,8 @@
 #Please reference Meila and Bao JMLR paper for definitions of various statistics within the model
+#Code by James Buenfil
 
-#maps permutation to a matrix. The matrix has dimensions maxitem x tmax, 
-#which can be specified
-#or deduced from the single permutation passed in
+#maps permutation to its matrix representation. The matrix has dimensions maxitem x tmax, 
+#which can be specified or deduced from the single permutation passed in
 pi_to_Pi <- function(pi1,maxitem=NULL,tmax = NULL) {
   if (is.null(maxitem)) {
     maxitem = max(unlist(pi1))
@@ -19,13 +19,12 @@ pi_to_Pi <- function(pi1,maxitem=NULL,tmax = NULL) {
 }
 
 #maps the list of all permutations to a list of their matrix representations. 
-#The matrix representations have dimensions
-#maxitem x tmax, where maxitem is the largest item index that appears across 
-#all permutations in S_N, and tmax is
-#the length of the largest permutation
+#The matrix representations have dimensions maxitem x tmax, where maxitem is the
+#largest item index that appears across all permutations in S_N, and tmax is
+#the length of the largest permutation.
 #we can also specify maxitem to be larger than the max item that appears in S_N
 #we can also specify tmax to be larger than the largest permutation length that 
-#appears in S_N
+#appears in S_N.
 SN_to_Pis <- function(S_N,maxitem=NULL,tmax = NULL) {
   if (is.null(maxitem)) {
     maxitem = max(unlist(S_N))
@@ -210,7 +209,6 @@ sj_to_pi <- function(s,sigma0 = NULL) {
 #theta_j parameter values for j =1, ... tmax.
 #if theta_init is not specified, then theta_init is set to be all 1s.
 #if max_iterations not specified, then max_iterations set to be 10
-#TODO: implement convergence criterion?
 EstimateSigmaTheta <- function(R,N,theta_init = NULL,max_iterations = NULL) {
   tmax = length(N)
   if  (is.null(theta_init)) {
@@ -428,7 +426,7 @@ compute_deltas <-function(pi1,pi2) {
   #at each rank, we compute the number of inversions added, stored in deltas
   deltas = rep(0,t)
   for (j in 0:(t-1)) {
-    print(j)
+    #print(j)
     item1 = pi1_complete[[j+1]]
     item2 = pi2_complete[[j+1]]
     
