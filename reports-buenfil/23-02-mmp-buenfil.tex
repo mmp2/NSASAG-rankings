@@ -203,7 +203,8 @@ However, what we would like is a similarly weighted distance between two ordered
 \begin{definition}
 The total number of inversions, denoted $\inv\bl \pi, \pi' \br$, between $\pi,\pi'$ is the number of pairs $\{a,b\}\subset \pi \cup \pi'$ on whose order $\pi$ and $\pi'$ disagree. 
 \end{definition}
-
+\textbf{Example 1:}\\
+\textit{The number of inversions between the rankings $\pi = (2,3,4)$ and $\pi' = (1,3,2,4)$ is 4, because $\pi$ and $\pi'$ disagree on the pairs of elements $\{ 1,2 \}$, $\{ 1,3 \}$, $\{1,4\}$, and $\{2,3\}$.}\\\\
 Moving forward, it will make things easier to ``complete" both lists. The following proposition says that the total number of inversions before and after completing the lists remains the same.
 
 \begin{prop}
@@ -236,7 +237,7 @@ It turns out that we can compute the $\Delta_j$ using the formula in the followi
 
 %
 \begin{prop} Denote $A_j = \pi_{1:j}$, $A'_j = \pi'_{1:j}$, $C_j=A_j\setminus A'_j$, and $C'_j=A'_j\setminus Aj$. Let $c_j(i')=\bl \text{rank of $i'$ in $C_j$}\br -1$, if $i'\in C_j$, and $|C_j|$ otherwise, and define $c'_j(i)$ similarly; let $i=\pi_{j+1},\,i'=\pi'_{j+1}$. Let I be the indicator for a logical statement ($1$ if true, $0$ if false). Then,
-  \beq \Delta_{j+1}\,=\,c_j(i')+c'_j(i)+ I\bl i \neq i' \br I\bl i \notin C_j' \text{and } i \notin C_j \br.  \eeq
+  \beq \label{eq:delta_formula} \Delta_{j+1}\,=\,c_j(i')+c'_j(i)+ I\bl i \neq i' \br I\bl i \notin C_j' \text{and } i \notin C_j \br.  \eeq
 \end{prop}
 %
     {\bf Proof} There are five cases. The proof follows from verifying the given formula in all cases:\\
@@ -248,12 +249,22 @@ It turns out that we can compute the $\Delta_j$ using the formula in the followi
     (v) $i\in C'_j,i'\in C_j$. Similar reasoning to the above. $\Box$.
     %
 \begin{remark} 
-Note that $\Delta_j$ is not equal to $s_j$, or $s'_j$, the codes of $\pi,\pi$ w.r.t. $\sigma$. In fact, by the triangle inequality $\sum_j\Delta_j\leq \sum_j s_j +\sum_j s'_j$.  
+Note that $\Delta_j$ is not equal to $s_j$, or $s'_j$, the codes of $\pi,\pi'$ w.r.t. $\sigma$. In fact, by the triangle inequality $\sum_j\Delta_j\leq \sum_j s_j +\sum_j s'_j$.  
 \end{remark}
 
 
-In practice, we compute $\Delta_{j+1}$ using the formula in the proposition (requiring $C_{j}$, $C_{j}'$, $\pi_{j+1}$, and $\pi_{j+1}'$). We can compute the $\Delta_j$ sequentially (and relatively quickly) thanks to the fact that we can find $C_{j+1}$ and $C_{j+1}'$ using only $C_{j}$, $C_{j}'$, $\pi_{j+1}$, and $\pi_{j+1}'$, and depending on which of the five cases we are in.
-
+In practice, we compute $\Delta_{j+1}$ using the formula in the proposition (requiring $C_{j}$, $C_{j}'$, $\pi_{j+1}$, and $\pi_{j+1}'$). We can compute the $\Delta_j$ sequentially (and relatively quickly) thanks to the fact that we can find $C_{j+1}$ and $C_{j+1}'$ using only $C_{j}$, $C_{j}'$, $\pi_{j+1}$, and $\pi_{j+1}'$, and depending on which of the five cases we are in.\\\\
+\textbf{Example 2}:\\
+We look at the same rankings in Example 1. The completed rankings are $\pi = (2,3,4,1)$ and $\pi' = (1,3,2,4)$.
+Computing $\Delta_1$:\\
+$A_0 = A'_0 = (),$ $C_0 = C'_0 = ()$, the empty set. $i = \pi_1 = 2$, and $i'= \pi'_1 = 1$. We use equation \eqref{eq:delta_formula} which gives $\Delta_1 = 0 + 0 + 1 = 1$. The new pair where $\pi$ and $\pi'$ disagree is $\{ 1,2 \}$.\\\\
+Computing $\Delta_2$:\\
+$A_1 = (2)$, $A'_1 = (1)$, $C_1 = (2)$, $C'_1 = (1)$. $i = \pi_2 = 3$, and $i'= \pi'_1 = 3$. Equation \eqref{eq:delta_formula} gives $\Delta_2 = 1 + 1 + 0 = 2$. The new pairs where $\pi$ and $\pi'$ disagree are $\{ 1,3 \}$ and $\{2,3\}$.\\\\
+Computing $\Delta_3$:\\
+$A_2 = (2,3)$, $A'_2 = (1,3)$. $C_2 = (2)$, $C'_2 = (1)$. $i = \pi_3 = 4$, and $i'= \pi'_3 = 2$. Equation \eqref{eq:delta_formula} gives $\Delta_3 = 0 + 1 + 0 = 1$. The new pair where $\pi$ and $\pi'$ disagree is $\{1,4\}$\\\\
+Computing $\Delta_4$:\\
+$A_3 = (2,3,4)$, $A'_3 = (1,3,2)$. $C_3 = (4)$, $C'_3 = (1)$. $i = \pi_4 = 4$, and $i'= \pi'_4 = 1$. Equation \eqref{eq:delta_formula} gives $\Delta_3 = 0 + 0 + 0 = 0$.\\\\
+We see that $\sum_{j=1}^4\Delta_j =\inv(\pi,\pi') = 4$, the total number of inversions between $\pi$ and $\pi'$.
 \subsection{Accompanying code}
 In the accompanying R code, we implement many of the ideas here, in particular:
 \begin{enumerate}
@@ -280,9 +291,5 @@ Top ranks have iid (?) distribution. Not known how far down this property holds.
 To see if relevant.
 
 \appendix
-
-
-
-
     
 \end{document}
