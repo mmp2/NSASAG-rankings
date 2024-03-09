@@ -279,17 +279,30 @@ We remark that in the code, we use the $\theta_j$ parameterization of the model,
 Widely analyzed theoretically, assumes independent inversions between each pair of items. Not a distribution over $\ssss_{\X}$; this is not necessarily a problem. Has a parameter per pair of items, handles partial comparisons data naturally (i.e. $a \prec b$), no explicit modal ranking (a plus). To see if it extends to very large $\X$. 
 
 
-\section{Plackett-Luce models}
-\label{sec:pl}
-Stagewise model, based on scores, great for \topt for finite $\X$. Not sure how to expand to very large $\X$. 
+
 
 \section{Thurstonian models}
 \label{sec:thurst}
-Top ranks have iid (?) distribution. Not known how far down this property holds.
+In the Thurstonian model, each item is given a score $s_i = \mu_i + d_i$ where $\mu_i$ is the fixed mean of $s_i$ and $d_i$ is a random variable with mean $0$. Given $n$ total items, by putting the $d_i$ into a random vector $d \in \mathbb{R}^n$, a common approach is model their joint distribution as a multivariate normal with some covariance $\Sigma$. We could subsequently use maximum likelihood to estimate the means $\mu_i$ and the covariance matrix $\Sigma$. With only two observations, it would be required to place further modeling assumptions on $\mu$ and $\Sigma$, which could be appropriate (for example, supposing that $\Sigma = \sigma I_n$).
+
+To sample from a Thurstonian model where we would like to incorporate that items could be missing, there are two obvious approaches. One is to first specify a length, sample the estimated model which includes all the items, and then to only keep the items that were ranked the highest (so we obtain a ranking of the specified length). The second approach is to specify a missingness mechanism (for example, each item has a parameter which determines the weighting of a Bernoulli random variable, and then the item is included in the model only if a Bernoulli variable for that item is a $1$ when sampled), and then sample the model restricted to the specified items. Although this second approach is natural, a disadvantage is that we no longer view the observed rankings as top $t$ rankings, instead we are looking at the ranks of the items being ranked relative to one another (e.g. if we observe a ranking with an item missing, we are not assuming that the missing item is ranked lower than the observed items, like we do in the Generalized Mallows Model).
+
+An advantage of a Thurstonian model is that each item has a parameter, which is very intuitive. If we already have strong prior beliefs/ideas about what the parameters in a Thurstonian model are, then we could place a prior distribution on the parameters of the model directly, and then sample from it in order to obtain the distribution of test statistics.
+
+%Top ranks have iid (?) distribution. Not known how far down this property holds.
+
+\section{Plackett-Luce models}
+\label{sec:pl}
+The Plackett-Luce ranking model turns out to be special case of a Thurstonian model, where the $d_i$ are i.i.d. with a Gumbell distribution, but the means $\mu_i$ are allowed to be different (See Section 2.2 of \cite{guiver2009bayesian}). 
+%Stagewise model, based on scores, great for \topt for finite $\X$. Not sure how to expand to very large $\X$. 
 \section{Ranking with a $p$-norm push}
 \label{sec:push}
 To see if relevant.
 
 \appendix
+
+
+
+
     
 \end{document}
