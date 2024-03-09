@@ -293,7 +293,11 @@ An advantage of a Thurstonian model is that each item has a parameter, which is 
 
 \section{Plackett-Luce models}
 \label{sec:pl}
-The Plackett-Luce ranking model turns out to be special case of a Thurstonian model, where the $d_i$ are i.i.d. with a Gumbell distribution, but the means $\mu_i$ are allowed to be different (See Section 2.2 of \cite{guiver2009bayesian}). 
+The Packett-Luce model for rankings (see \cite{maystre2015fast} for a brief review) is a well-known parametric probability distribution where observations are full rankings of $m$ items. It turns out to be special case of a Thurstonian model, where the $d_i$ are i.i.d. with a Gumbell distribution, but the means $\mu_i$ are allowed to be different (See Section 2.2 of \cite{guiver2009bayesian}).
+
+See \cite{caron2014bayesian} for a non-parametric Bayesian approach which can handle infinitely many items. \cite{turner2020modelling} gives an R package which can handle missing data, and also review several other R packages for parameter estimation in the Plackett-Luce model.
+
+As it is also a Thurstonian models, the same ideas discussed there apply to the Plackett-Luce model as well.
 %Stagewise model, based on scores, great for \topt for finite $\X$. Not sure how to expand to very large $\X$. 
 \section{Ranking with a $p$-norm push}
 \label{sec:push}
